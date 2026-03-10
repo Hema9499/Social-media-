@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Social_Media_Barhoum</title>
+    <title>Social_sung</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,64 +13,211 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
             position: relative;
-            overflow-x: hidden;
         }
 
-        body::before {
+        /* ===== تساقط النجوم الجديد ===== */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* نجوم ثابتة في الخلفية */
+        .static-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 10px white; }
+        }
+
+        /* نجوم متساقطة - شكل كوميت */
+        .falling-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8), 
+                        0 0 20px 4px rgba(102, 126, 234, 0.5);
+            animation: shoot 4s linear infinite;
+            opacity: 0;
+        }
+
+        .falling-star::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: moveGrid 20s linear infinite;
-            pointer-events: none;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 0;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(255, 255, 255, 0) 0%, 
+                rgba(255, 255, 255, 0.8) 50%, 
+                rgba(255, 255, 255, 1) 100%);
+            border-radius: 100%;
         }
 
-        @keyframes moveGrid {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0) rotate(-45deg);
+                opacity: 1;
+            }
+            10% {
+                opacity: 1;
+            }
+            20% {
+                transform: translateX(-200px) translateY(200px) rotate(-45deg);
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
         }
 
+        /* نجوم متساقطة من أماكن مختلفة */
+        .falling-star:nth-child(1) { top: 10%; right: -10%; animation-delay: 0s; animation-duration: 3s; }
+        .falling-star:nth-child(2) { top: 20%; right: 10%; animation-delay: 2s; animation-duration: 4s; }
+        .falling-star:nth-child(3) { top: 5%; right: 30%; animation-delay: 4s; animation-duration: 3.5s; }
+        .falling-star:nth-child(4) { top: 15%; right: 50%; animation-delay: 1s; animation-duration: 5s; }
+        .falling-star:nth-child(5) { top: 25%; right: 70%; animation-delay: 3s; animation-duration: 4s; }
+        .falling-star:nth-child(6) { top: 8%; right: 85%; animation-delay: 5s; animation-duration: 3s; }
+        .falling-star:nth-child(7) { top: 30%; right: 20%; animation-delay: 2.5s; animation-duration: 4.5s; }
+        .falling-star:nth-child(8) { top: 12%; right: 60%; animation-delay: 6s; animation-duration: 3s; }
+
+        /* جسور النجوم (Star Bridges) */
+        .star-bridge {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 20%, 
+                rgba(255, 255, 255, 0.6) 50%, 
+                rgba(255, 255, 255, 0.3) 80%, 
+                transparent 100%);
+            animation: bridge 8s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes bridge {
+            0% { transform: translateX(-100vw); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateX(100vw); opacity: 0; }
+        }
+
+        /* زر الموسيقى */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .music-control:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .music-control.playing {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(102, 126, 234, 0); }
+        }
+
+        /* الحاوية */
         .container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             border-radius: 30px;
-            padding: 50px 40px;
-            max-width: 450px;
-            width: 100%;
+            padding: 40px;
+            width: 90vw;
+            max-width: 500px;
+            height: 90vh;
+            max-height: 800px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-y: auto;
+        }
+
+        .container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
         }
 
         .profile-section {
-            margin-bottom: 40px;
+            flex-shrink: 0;
         }
 
         .avatar {
-            width: 120px;
-            height: 120px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             margin: 0 auto 20px;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.6), 0 0 60px rgba(102, 126, 234, 0.3);
             position: relative;
             overflow: hidden;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 30px rgba(102, 126, 234, 0.6), 0 0 60px rgba(102, 126, 234, 0.3); }
+            to { box-shadow: 0 0 40px rgba(118, 75, 162, 0.8), 0 0 80px rgba(118, 75, 162, 0.5); }
         }
 
         .avatar img {
@@ -80,65 +227,57 @@
             display: block;
         }
 
-        .avatar::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: rotate(45deg);
-            transition: all 0.5s;
-            opacity: 0;
-        }
-
-        .container:hover .avatar::after {
-            animation: shine 0.5s ease-in-out;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); opacity: 0; }
+        .avatar-fallback {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            color: white;
         }
 
         h1 {
             color: #ffffff;
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
         .subtitle {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 1rem;
-            font-weight: 300;
-            margin-bottom: 30px;
+            font-weight: 400;
+            margin-bottom: 20px;
         }
 
         .social-links {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            flex: 1;
+            justify-content: center;
+            overflow-y: auto;
+            padding-right: 5px;
         }
 
         .social-link {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 18px 25px;
-            border-radius: 15px;
+            padding: 16px 22px;
+            border-radius: 16px;
             text-decoration: none;
             color: white;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.1);
             background: rgba(255, 255, 255, 0.05);
+            flex-shrink: 0;
         }
 
         .social-link::before {
@@ -148,9 +287,9 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
             transform: translateX(-100%);
-            transition: transform 0.5s;
+            transition: transform 0.6s;
         }
 
         .social-link:hover::before {
@@ -158,8 +297,9 @@
         }
 
         .social-link:hover {
-            transform: translateY(-3px);
+            transform: translateX(-5px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .link-content {
@@ -169,14 +309,19 @@
         }
 
         .link-icon {
-            width: 45px;
-            height: 45px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             background: rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .social-link:hover .link-icon {
+            transform: scale(1.1) rotate(5deg);
         }
 
         .arrow {
@@ -190,56 +335,25 @@
             transform: translateX(0);
         }
 
-        /* Custom colors for each platform */
-        .instagram:hover {
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        .social-link:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-color: transparent;
         }
 
-        .twitter:hover {
-            background: #000000;
-            border-color: transparent;
-        }
-
-        .facebook:hover {
-            background: #1877f2;
-            border-color: transparent;
-        }
-
-        .linkedin:hover {
-            background: #0a66c2;
-            border-color: transparent;
-        }
-
-        .youtube:hover {
-            background: #ff0000;
-            border-color: transparent;
-        }
-
-        .tiktok:hover {
-            background: #000000;
-            border-color: transparent;
-        }
-
-        .whatsapp:hover {
-            background: #25d366;
-            border-color: transparent;
-        }
-
-        .telegram:hover {
-            background: #0088cc;
-            border-color: transparent;
+        .social-link:hover .link-icon {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .footer {
-            margin-top: 40px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.85rem;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
             font-weight: 300;
+            flex-shrink: 0;
         }
 
         .footer i {
-            color: #e74c3c;
+            color: #667eea;
             animation: heartbeat 1.5s ease-in-out infinite;
         }
 
@@ -248,147 +362,177 @@
             50% { transform: scale(1.2); }
         }
 
-        /* Responsive */
-        @media (max-width: 480px) {
+        @media (max-width: 600px) {
             .container {
-                padding: 40px 25px;
+                width: 95vw;
+                height: 95vh;
+                padding: 30px 20px;
+                border-radius: 25px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .avatar {
+                width: 110px;
+                height: 110px;
+            }
+
+            .social-link {
+                padding: 14px 18px;
+                font-size: 0.95rem;
+            }
+
+            .link-icon {
+                width: 38px;
+                height: 38px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .container {
+                height: 95vh;
             }
             
-            h1 {
-                font-size: 1.7rem;
+            .social-links {
+                gap: 8px;
             }
             
             .social-link {
-                padding: 16px 20px;
-                font-size: 1rem;
+                padding: 12px 18px;
             }
         }
 
-        /* Loading animation */
         .container {
-            animation: fadeInUp 0.8s ease-out;
+            animation: fadeInScale 0.8s ease-out;
         }
 
-        @keyframes fadeInUp {
+        @keyframes fadeInScale {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: scale(0.9);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
         }
 
         .social-link {
-            animation: fadeInUp 0.8s ease-out backwards;
+            animation: slideIn 0.6s ease-out backwards;
         }
 
         .social-link:nth-child(1) { animation-delay: 0.1s; }
-        .social-link:nth-child(2) { animation-delay: 0.2s; }
-        .social-link:nth-child(3) { animation-delay: 0.3s; }
-        .social-link:nth-child(4) { animation-delay: 0.4s; }
-        .social-link:nth-child(5) { animation-delay: 0.5s; }
-        .social-link:nth-child(6) { animation-delay: 0.6s; }
-        .social-link:nth-child(7) { animation-delay: 0.7s; }
-        .social-link:nth-child(8) { animation-delay: 0.8s; }
+        .social-link:nth-child(2) { animation-delay: 0.15s; }
+        .social-link:nth-child(3) { animation-delay: 0.2s; }
+        .social-link:nth-child(4) { animation-delay: 0.25s; }
+        .social-link:nth-child(5) { animation-delay: 0.3s; }
+        .social-link:nth-child(6) { animation-delay: 0.35s; }
+        .social-link:nth-child(7) { animation-delay: 0.4s; }
     </style>
 </head>
 <body>
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="music-control" id="musicBtn" onclick="toggleMusic()">
+        <i class="fas fa-play" id="musicIcon"></i>
+    </div>
+
+    <!-- ===== تساقط النجوم الجديد ===== -->
+    <div class="stars-container" id="starsContainer">
+        <!-- نجوم ثابتة -->
+        <div class="static-star" style="top: 10%; left: 20%; width: 2px; height: 2px; animation-delay: 0s;"></div>
+        <div class="static-star" style="top: 20%; left: 80%; width: 3px; height: 3px; animation-delay: 0.5s;"></div>
+        <div class="static-star" style="top: 30%; left: 40%; width: 2px; height: 2px; animation-delay: 1s;"></div>
+        <div class="static-star" style="top: 40%; left: 60%; width: 2px; height: 2px; animation-delay: 1.5s;"></div>
+        <div class="static-star" style="top: 50%; left: 10%; width: 3px; height: 3px; animation-delay: 2s;"></div>
+        <div class="static-star" style="top: 60%; left: 90%; width: 2px; height: 2px; animation-delay: 0.3s;"></div>
+        <div class="static-star" style="top: 70%; left: 30%; width: 2px; height: 2px; animation-delay: 0.8s;"></div>
+        <div class="static-star" style="top: 80%; left: 70%; width: 3px; height: 3px; animation-delay: 1.2s;"></div>
+        <div class="static-star" style="top: 15%; left: 50%; width: 2px; height: 2px; animation-delay: 1.8s;"></div>
+        <div class="static-star" style="top: 85%; left: 15%; width: 2px; height: 2px; animation-delay: 0.2s;"></div>
+        <div class="static-star" style="top: 25%; left: 75%; width: 2px; height: 2px; animation-delay: 2.2s;"></div>
+        <div class="static-star" style="top: 75%; left: 45%; width: 3px; height: 3px; animation-delay: 0.7s;"></div>
+        <div class="static-star" style="top: 5%; left: 35%; width: 2px; height: 2px; animation-delay: 1.3s;"></div>
+        <div class="static-star" style="top: 90%; left: 55%; width: 2px; height: 2px; animation-delay: 0.9s;"></div>
+        <div class="static-star" style="top: 45%; left: 25%; width: 2px; height: 2px; animation-delay: 1.6s;"></div>
+        
+        <!-- نجوم متساقطة (كوميت) -->
+        <div class="falling-star"></div>
+        <div class="falling-star"></div>
+        <div class="falling-star"></div>
+        <div class="falling-star"></div>
+        <div class="falling-star"></div>
+        <div class="falling-star"></div>
+        <div class="falling-star"></div>
+        <div class="falling-star"></div>
+    </div>
+
     <div class="container">
         <div class="profile-section">
-            <!-- هنا تحط رابط الصورة المختصر -->
             <div class="avatar">
-                <img src="https://files.catbox.moe/qnl2ue.jpg" alt="Hema Elknany 💫" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-user\' style=\'font-size:48px;color:white;display:flex;align-items:center;justify-content:center;height:100%;\'></i>';">
+                <img src="https://files.catbox.moe/f9aag2.jpg" alt="Hema elknany 🩺💫" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'avatar-fallback\'><i class=\'fas fa-user\'></i></div>';">
             </div>
-            <h1>Hema Elknany 💫</h1>
-            <p class="subtitle">جميع حسابات السوشيل ميديا الخاصه 💫🍷</p>
+            <h1>Hema elknany 🩺💫</h1>
+            <p class="subtitle">جميع حسابات السوشيل ميديا في مكان واحد ♥✨</p>
         </div>
 
         <div class="social-links">
-            <!-- Instagram -->
-            <a href="https://instagram.com/x9_sung_7x" class="social-link instagram" target="_blank">
+            <a href="https://instagram.com/x9_sung_7x" class="social-link" target="_blank">
                 <div class="link-content">
-                    <div class="link-icon">
-                        <i class="fab fa-instagram"></i>
-                    </div>
+                    <div class="link-icon"><i class="fab fa-instagram"></i></div>
                     <span>إنستجرام</span>
                 </div>
                 <i class="fas fa-arrow-left arrow"></i>
             </a>
 
-            <!-- Twitter/X -->
-            <a href="https://twitter.com/x9_sung_7x" class="social-link twitter" target="_blank">
+            <a href="https://twitter.com/x9_sung_7x" class="social-link" target="_blank">
                 <div class="link-content">
-                    <div class="link-icon">
-                        <i class="fab fa-x-twitter"></i>
-                    </div>
+                    <div class="link-icon"><i class="fab fa-x-twitter"></i></div>
                     <span>تويتر / إكس</span>
                 </div>
                 <i class="fas fa-arrow-left arrow"></i>
             </a>
 
-            <!-- Facebook -->
-            <a href="https://www.facebook.com/share/1bkEKFkLaW/" class="social-link facebook" target="_blank">
+            <a href="https://www.facebook.com/share/1KG9wtan4s/" class="social-link" target="_blank">
                 <div class="link-content">
-                    <div class="link-icon">
-                        <i class="fab fa-facebook-f"></i>
-                    </div>
+                    <div class="link-icon"><i class="fab fa-facebook-f"></i></div>
                     <span>فيسبوك</span>
                 </div>
                 <i class="fas fa-arrow-left arrow"></i>
             </a>
 
-            <!-- LinkedIn -->
-            <a href="https://linkedin.com/in/" class="social-link linkedin" target="_blank">
+            <a href="https://youtube.com/@8e7h_d?si=2awJNYK9j-uGFmAK" class="social-link" target="_blank">
                 <div class="link-content">
-                    <div class="link-icon">
-                        <i class="fab fa-linkedin-in"></i>
-                    </div>
-                    <span>لينكد إن</span>
-                </div>
-                <i class="fas fa-arrow-left arrow"></i>
-            </a>
-
-            <!-- YouTube -->
-            <a href="https://youtube.com/@8e7h_d" class="social-link youtube" target="_blank">
-                <div class="link-content">
-                    <div class="link-icon">
-                        <i class="fab fa-youtube"></i>
-                    </div>
+                    <div class="link-icon"><i class="fab fa-youtube"></i></div>
                     <span>يوتيوب</span>
                 </div>
                 <i class="fas fa-arrow-left arrow"></i>
             </a>
 
-            <!-- TikTok -->
-            <a href="https://tiktok.com/@8e7h_d" class="social-link tiktok" target="_blank">
+            <a href="https://tiktok.com/@8e7h_d" class="social-link" target="_blank">
                 <div class="link-content">
-                    <div class="link-icon">
-                        <i class="fab fa-tiktok"></i>
-                    </div>
+                    <div class="link-icon"><i class="fab fa-tiktok"></i></div>
                     <span>تيك توك</span>
                 </div>
                 <i class="fas fa-arrow-left arrow"></i>
             </a>
 
-            <!-- WhatsApp -->
-            <a href="https://wa.me/201067668406" class="social-link whatsapp" target="_blank">
+            <a href="https://wa.me/201067668406" class="social-link" target="_blank">
                 <div class="link-content">
-                    <div class="link-icon">
-                        <i class="fab fa-whatsapp"></i>
-                    </div>
+                    <div class="link-icon"><i class="fab fa-whatsapp"></i></div>
                     <span>واتساب</span>
                 </div>
                 <i class="fas fa-arrow-left arrow"></i>
             </a>
 
-            <!-- Telegram -->
-            <a href="https://t.me/PA7SP" class="social-link telegram" target="_blank">
+            <a href="https://t.me/PA7SP" class="social-link" target="_blank">
                 <div class="link-content">
-                    <div class="link-icon">
-                        <i class="fab fa-telegram-plane"></i>
-                    </div>
+                    <div class="link-icon"><i class="fab fa-telegram-plane"></i></div>
                     <span>تليجرام</span>
                 </div>
                 <i class="fas fa-arrow-left arrow"></i>
@@ -396,8 +540,71 @@
         </div>
 
         <div class="footer">
-            <p>صنع بـ <i class="fas fa-heart"></i> بواسطة برهوم</p>
+            <p>صنع بـ <i class="fas fa-heart"></i> بواسطة روحي</p>
         </div>
     </div>
+
+    <script>
+        const music = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const musicIcon = document.getElementById('musicIcon');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicIcon.classList.remove('fa-pause');
+                musicIcon.classList.add('fa-play');
+                musicBtn.classList.remove('playing');
+            } else {
+                music.play().catch(e => console.log('Audio play failed:', e));
+                musicIcon.classList.remove('fa-play');
+                musicIcon.classList.add('fa-pause');
+                musicBtn.classList.add('playing');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        music.volume = 0.3;
+
+        // تساقط نجوم ديناميكي - شكل كوميت
+        function createShootingStar() {
+            const star = document.createElement('div');
+            star.className = 'falling-star';
+            star.style.top = Math.random() * 40 + '%';
+            star.style.right = '-10%';
+            star.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            star.style.animationDelay = '0s';
+            
+            document.getElementById('starsContainer').appendChild(star);
+            
+            setTimeout(() => star.remove(), 5000);
+        }
+
+        // نجوم ثابتة ديناميكية
+        function createStaticStar() {
+            const star = document.createElement('div');
+            star.className = 'static-star';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.width = (Math.random() * 2 + 1) + 'px';
+            star.style.height = star.style.width;
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            
+            document.getElementById('starsContainer').appendChild(star);
+        }
+
+        // إنشاء نجوم أولية
+        for(let i = 0; i < 20; i++) {
+            createStaticStar();
+        }
+
+        // تساقط مستمر
+        setInterval(createShootingStar, 2000);
+        
+        // إضافة نجوم ثابتة جديدة كل شوية
+        setInterval(createStaticStar, 3000);
+    </script>
 </body>
 </html>
